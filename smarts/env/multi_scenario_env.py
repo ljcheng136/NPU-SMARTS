@@ -68,7 +68,7 @@ def multi_scenario_v0_env(
         Ego's next x-coordinate on the map                  [-1e10,1e10]
         Ego's next y-coordinate on the map                  [-1e10,1e10]
         Ego's next heading with respect to the map's axes   [-π,π]
-        Time delta to reach the given pose                  [-1e10,1e10]
+        Time delta to reach the given pose                  [0,1e10]
 
     Reward:
         Reward is distance travelled (in meters) in each step, including the
@@ -246,9 +246,9 @@ def resolve_agent_interface(
     done_criteria = DoneCriteria(
         collision=True,
         off_road=True,
-        off_route=False,
+        off_route=True,
         on_shoulder=False,
-        wrong_way=False,
+        wrong_way=True,
         not_moving=False,
         agents_alive=None,
     )

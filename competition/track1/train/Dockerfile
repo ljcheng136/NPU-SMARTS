@@ -2,6 +2,15 @@ FROM pytorch/pytorch:1.7.1-cuda11.0-cudnn8-runtime
 
 ARG DEBIAN_FRONTEND=noninteractive
 
+# (Optional) Disable certificate verification
+RUN touch /etc/apt/apt.conf.d/99verify-peer.conf && \
+    echo >>/etc/apt/apt.conf.d/99verify-peer.conf 'Acquire::https::Verify-Peer "false";' && \
+    echo >>/etc/apt/apt.conf.d/99verify-peer.conf 'Acquire::https::Verify-Host "false";'
+
+# (Temporary) NVIDIA invalid public key
+# RUN rm /etc/apt/sources.list.d/cuda.list
+# RUN rm /etc/apt/sources.list.d/nvidia-ml.list
+
 # Install libraries.
 RUN apt-get update --fix-missing && \
     apt-get install -y \
@@ -25,6 +34,9 @@ ENV VIRTUAL_ENV=/opt/.venv
 RUN python3.8 -m venv $VIRTUAL_ENV
 ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 RUN pip install --upgrade pip wheel
+
+# (Optional) Disable git certificate verification
+RUN git config --global http.sslVerify false
 
 # Install requirements.txt .
 COPY ./competition/track1/train/requirements.txt /tmp/requirements.txt

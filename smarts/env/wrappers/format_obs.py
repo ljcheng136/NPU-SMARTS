@@ -274,20 +274,34 @@ class FormatObs(gym.ObservationWrapper):
 
         Note: Users should not directly call this method.
         """
-        wrapped_obs = {}
-        for agent_id, agent_obs in obs.items():
-            wrapped_ob = {}
-            for stdob in self._space.keys():
-                func = globals()[f"_std_{stdob}"]
-                if stdob == "ego":
-                    val = func(
-                        getattr(agent_obs, self._stdob_to_ob[stdob]),
-                        self._accelerometer,
-                    )
-                else:
-                    val = func(getattr(agent_obs, self._stdob_to_ob[stdob]))
-                wrapped_ob.update({stdob: val})
-            wrapped_obs.update({agent_id: wrapped_ob})
+        try:
+            wrapped_obs = {}
+            for agent_id, agent_obs in obs.items():
+                wrapped_ob = {}
+                for stdob in self._space.keys():
+                    func = globals()[f"_std_{stdob}"]
+                    if stdob == "ego":
+                        val = func(
+                            getattr(agent_obs, self._stdob_to_ob[stdob]),
+                            self._accelerometer,
+                        )
+                    else:
+                        val = func(getattr(agent_obs, self._stdob_to_ob[stdob]))
+                    wrapped_ob.update({stdob: val})
+                wrapped_obs.update({agent_id: wrapped_ob})
+        except:
+            from PIL import Image
+            from pathlib import Path
+            print("==========================================")
+            print(f"agent_id: {agent_id}")
+            print(f"val.lane_index: {val.lane_index}")
+            print(f"val.position: {val.position}")
+            rgb_data = agent_obs.top_down_rgb.data
+            img = Image.fromarray(rgb_data, "RGB")
+            img.save(str(Path(".","output",f"{agent_id}.png")))
+            print("==========================================")
+            
+            raise
 
         return wrapped_obs
 

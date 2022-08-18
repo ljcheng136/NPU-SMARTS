@@ -292,13 +292,20 @@ class FormatObs(gym.ObservationWrapper):
         except:
             from PIL import Image
             from pathlib import Path
+            import os
             print("==========================================")
             print(f"agent_id: {agent_id}")
-            print(f"val.lane_index: {val.lane_index}")
-            print(f"val.position: {val.position}")
+            print(f"obs.ego_vehicle_state.road_id: {agent_obs.ego_vehicle_state.road_id}")
+            print(f"obs.ego_vehicle_state.lane_id: {agent_obs.ego_vehicle_state.lane_id}")
+            print(f"obs.ego_vehicle_state.lane_index: {agent_obs.ego_vehicle_state.lane_index}")
+            print(f"obs.ego_vehicle_state.position: {agent_obs.ego_vehicle_state.position}")
+            print(f"obs.events: {agent_obs.events}")
+
             rgb_data = agent_obs.top_down_rgb.data
             img = Image.fromarray(rgb_data, "RGB")
-            img.save(str(Path(".","output",f"{agent_id}.png")))
+            cwd = os.getcwd()
+            img.save(str(Path(cwd,"competition","track1","train","logs",f"{agent_id}.png")))
+            print("Finished saving image")
             print("==========================================")
             
             raise

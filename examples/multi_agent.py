@@ -33,11 +33,11 @@ def main(scenarios, headless, num_episodes, max_episode_steps=None):
         "smarts.env:hiway-v0",
         scenarios=scenarios,
         agent_specs=agent_specs,
-        headless=headless,
+        headless=False,
         sumo_headless=True,
     )
 
-    for episode in episodes(n=num_episodes):
+    for episode in episodes(n=50):
         agents = {
             agent_id: agent_spec.build_agent()
             for agent_id, agent_spec in agent_specs.items()
@@ -62,20 +62,18 @@ if __name__ == "__main__":
     parser = default_argument_parser("multi-agent-example")
     args = parser.parse_args()
 
-    if not args.scenarios:
-        args.scenarios = [
-            str(
-                pathlib.Path(__file__).absolute().parents[1]
-                / "scenarios"
-                / "sumo"
-                / "loop"
-            )
+    args.scenarios = [
+        "/home/adai/workspace/competition_bundle/eval_scenarios/straight/single_agent/overtake/2lane_agents_1"
         ]
 
     sstudio.build_scenario(scenario=args.scenarios)
 
-    main(
-        scenarios=args.scenarios,
-        headless=args.headless,
-        num_episodes=args.episodes,
-    )
+    main()
+
+# Instructions to visualize
+# Change the paths appropriately
+# 1) git checkout visualize
+# 2) cd <path>/SMARTS/examples/
+# 3) Change scenario path to desired scenario in args.scenario at line 65 in `examples/multi_agent.py` file.
+# 4) Open a separate new terminal and run 'scl envision start -s /home/adai/workspace/competition_bundle/eval_scenarios/'
+# 5) Open a separate new terminal and run python3.8 ./multi_agent.py

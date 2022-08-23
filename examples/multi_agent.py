@@ -1,5 +1,3 @@
-import pathlib
-
 import gym
 from argument_parser import default_argument_parser
 
@@ -9,7 +7,7 @@ from smarts.core.agent_interface import AgentInterface, AgentType
 from smarts.core.utils.episodes import episodes
 from smarts.zoo.agent_spec import AgentSpec
 
-N_AGENTS = 4
+N_AGENTS = 2
 AGENT_IDS = ["Agent %i" % i for i in range(N_AGENTS)]
 
 
@@ -51,7 +49,8 @@ def main(scenarios, headless, num_episodes, max_episode_steps=None):
                 agent_id: agents[agent_id].act(agent_obs)
                 for agent_id, agent_obs in observations.items()
             }
-
+            import time
+            time.sleep(0.1)
             observations, rewards, dones, infos = env.step(actions)
             episode.record_step(observations, rewards, dones, infos)
 
@@ -63,17 +62,39 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     args.scenarios = [
-        "/home/adai/workspace/competition_bundle/eval_scenarios/straight/single_agent/overtake/2lane_agents_1"
+        "/home/adai/workspace/competition_bundle/eval_scenarios/straight/multi_agent/2lane_cruise_agents_2"
         ]
 
     sstudio.build_scenario(scenario=args.scenarios)
 
-    main()
+    main(
+        scenarios=args.scenarios,
+        headless=args.headless,
+        num_episodes=args.episodes,
+    )
 
-# Instructions to visualize
-# Change the paths appropriately
-# 1) git checkout visualize
-# 2) cd <path>/SMARTS/examples/
-# 3) Change scenario path to desired scenario in args.scenario at line 65 in `examples/multi_agent.py` file.
-# 4) Open a separate new terminal and run 'scl envision start -s /home/adai/workspace/competition_bundle/eval_scenarios/'
-# 5) Open a separate new terminal and run python3.8 ./multi_agent.py
+"""
+Instructions to visualize
+Change the paths appropriately
+
+1) git checkout visualize
+2) Open a separate new terminal and run 
+    $ cd <path>/SMARTS
+    $ python3.8 -m venv ./.venv
+    $ source ./.venv/bin/activate
+    $ pip install --upgrade pip
+    $ pip install -e .[camera-obs]
+    $ scl envision start -s /home/adai/workspace/competition_bundle/eval_scenarios/
+3) Change scenario path to the desired scenario in `args.scenario` at line 64 in this file.
+4) Change N_AGENTS at line 10 of this file to the number of agents present in the desired scenario.
+5) Open a separate new terminal and run 
+    $ cd <path>/SMARTS
+    $ source ./.venv/bin/activate
+    $ python3.8 examples/multi_agent.py
+6) The simulation has been purposely slowed down by adding a time delay at line 53 of this file.
+7) Go to http://localhost:8081 to see the envision visualization. 
+    Refresh the browser, if simulation does not appear automatically.
+8) An alternative way to visualize would be to use sumo-gui. Simply change line 35 of this file from 
+    `sumo_headless=True` to `sumo_headless=False`. A sumo-gui will automatically pop up when the 
+    simulation starts. A display is needed for the sumo-gui to work. 
+"""

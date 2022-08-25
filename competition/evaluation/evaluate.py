@@ -118,7 +118,7 @@ def evaluate(config):
     # Evaluate model for each scenario
     score = Score()
     for index, (env_name, (env, datastore, seed)) in enumerate(envs_eval.items()):
-        logger.info(f"\n{index}. Evaluating env {env_name}.\n")
+        print(f"\n{index}. Evaluating env {env_name}.\n")
         counts, costs = run(
             env=env,
             datastore=datastore,

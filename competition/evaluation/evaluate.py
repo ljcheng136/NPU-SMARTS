@@ -269,12 +269,11 @@ if __name__ == "__main__":
         rank = dict.fromkeys(rank, 0)
     elif config["phase"] == "track1":
         # Add scenario paths for remote evaluation.
-        if not args.local:
-            evaluation_dir = "/home/kyber/workspace/competition_bundle/eval_scenarios"      
-            config["scenarios"] = []
-            for dirpath, dirnames, filenames in os.walk(evaluation_dir):
-                if "scenario.py" in filenames:
-                    config["scenarios"].append(dirpath)
+        evaluation_dir = "/home/kyber/workspace/competition_bundle/eval_scenarios"      
+        config["scenarios"] = []
+        for dirpath, dirnames, filenames in os.walk(evaluation_dir):
+            if "scenario.py" in filenames:
+                config["scenarios"].append(dirpath)
         rank = evaluate(config)
     elif config["phase"] == "track2":
         score = Score()

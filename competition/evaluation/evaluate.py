@@ -19,7 +19,7 @@ _EVALUATION_CONFIG_KEYS = {
 }
 _DEFAULT_EVALUATION_CONFIG = dict(
     phase="track1",
-    eval_episodes=50,
+    eval_episodes=3,
     seed=42,
     scenarios=[
         "1_to_2lane_left_turn_c",
@@ -270,6 +270,7 @@ if __name__ == "__main__":
     elif config["phase"] == "track1":
         # Add scenario paths for remote evaluation.
         if not args.local:
+            evaluation_dir = "/home/kyber/workspace/competition_bundle/eval_scenarios"      
             config["scenarios"] = []
             for dirpath, dirnames, filenames in os.walk(evaluation_dir):
                 if "scenario.py" in filenames:

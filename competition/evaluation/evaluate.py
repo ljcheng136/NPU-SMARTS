@@ -31,7 +31,7 @@ _DEFAULT_EVALUATION_CONFIG = dict(
         "3lane_cut_in",
         "3lane_overtake",
     ],
-    bubble_env_evaluation_seeds=[],
+    bubble_env_evaluation_seeds=[6],
 )
 _SUBMISSION_CONFIG_KEYS = {
     "img_meters",
@@ -130,8 +130,8 @@ def evaluate(config):
         score.add(counts, costs)
 
     rank = score.compute()
-    logger.info("\nOverall Rank:\n", rank)
-    logger.info("\nFinished evaluating.\n")
+    print("\nOverall Rank:\n", rank)
+    print("\nFinished evaluating.\n")
 
     # Close all environments
     for env, _, _ in envs_eval.values():

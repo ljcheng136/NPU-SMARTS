@@ -77,7 +77,7 @@ def evaluate(config):
         action_space="TargetPose",
         img_meters=int(config["img_meters"]),
         img_pixels=int(config["img_pixels"]),
-        # sumo_headless=True,
+        sumo_headless=False,
         # headless=False,
     )
     # Make evaluation environments.

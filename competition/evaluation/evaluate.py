@@ -19,7 +19,7 @@ _EVALUATION_CONFIG_KEYS = {
 }
 _DEFAULT_EVALUATION_CONFIG = dict(
     phase="track1",
-    eval_episodes=3,
+    eval_episodes=2,
     seed=42,
     scenarios=[
         "1_to_2lane_left_turn_c",
@@ -77,8 +77,8 @@ def evaluate(config):
         action_space="TargetPose",
         img_meters=int(config["img_meters"]),
         img_pixels=int(config["img_pixels"]),
-        sumo_headless=True,
-        headless=False,
+        # sumo_headless=True,
+        # headless=False,
     )
     # Make evaluation environments.
     envs_eval = {}
@@ -272,17 +272,11 @@ if __name__ == "__main__":
         rank = dict.fromkeys(rank, 0)
     elif config["phase"] == "track1":
         # Add scenario paths for remote evaluation.
-        # evaluation_dir = "/home/kyber/workspace/competition_bundle/eval_scenarios"      
-        # config["scenarios"] = []
-        # for dirpath, dirnames, filenames in os.walk(evaluation_dir):
-        #     if "scenario.py" in filenames:
-        #         config["scenarios"].append(dirpath)
-        # print(config["scenarios"],"00000000000000000000000000000000000000000")
-        config["scenarios"]=[
-            "/home/kyber/workspace/competition_bundle/eval_scenarios/waymo/co1-agents_1/",
-            # "/home/kyber/workspace/competition_bundle/eval_scenarios/waymo/ot2-agents_1/",
-            # "/home/kyber/workspace/competition_bundle/eval_scenarios/waymo/cr3-agents_1/",
-        ]
+        evaluation_dir = "/home/adai/workspace/competition_bundle/eval_scenarios"      
+        config["scenarios"] = []
+        for dirpath, dirnames, filenames in os.walk(evaluation_dir):
+            if "scenario.py" in filenames:
+                config["scenarios"].append(dirpath)
         rank = evaluate(config)
     elif config["phase"] == "track2":
         score = Score()
@@ -291,9 +285,3 @@ if __name__ == "__main__":
     text = to_codalab_scores_string(rank)
     output_dir = os.path.join(scores_dir, _SCORES_FILENAME)
     write_output(text=text, output_dir=output_dir)
-
-'''
-competition_bundle/eval_scenarios/waymo/co1-agents_1
-competition_bundle/eval_scenarios/waymo/ot2-agents_1
-competition_bundle/eval_scenarios/waymo/cr3-agents_1
-'''

@@ -71,7 +71,6 @@ setup(
         "extras": ["pynput>=1.7.4"],  # Used by HumanKeyboardAgent
         "remote_agent": ["grpcio==1.32.0"],
         "rllib": [
-            "opencv-python>=4.1.2.30",
             "opencv-python-headless>=4.1.2.30",
             "ray[rllib]==1.0.1.post1",
         ],

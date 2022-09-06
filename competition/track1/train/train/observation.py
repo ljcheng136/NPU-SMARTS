@@ -56,6 +56,13 @@ class FilterObs(gym.ObservationWrapper):
                             + agent_obs_space["rgb"].shape[:-1],
                             dtype=np.uint8,
                         ),
+                        "ogm": gym.spaces.Box(
+                            low=0,
+                            high=255,
+                            shape=(agent_obs_space["ogm"].shape[-1],)
+                            + agent_obs_space["ogm"].shape[:-1],
+                            dtype=np.uint8
+                            ),
                         "goal_distance": gym.spaces.Box(
                             low=-1e10,
                             high=+1e10,
@@ -75,6 +82,17 @@ class FilterObs(gym.ObservationWrapper):
                             shape=(10, 1),
                             dtype=np.float64,
                         ),
+                        # ttr
+                        # "ego_lane_dist": gym.spaces.Box(
+                        #     low=-1e10,
+                        #     high=1e10, 
+                        #     shape=(3,),
+                        #     ),
+                        # "ego_ttc": gym.spaces.Box(
+                        #     low=-1e10,
+                        #     high=1e10,
+                        #     shape=(3,),
+                        #     ),
                     }
                 )
                 for agent_id, agent_obs_space in env.observation_space.spaces.items()
@@ -92,6 +110,8 @@ class FilterObs(gym.ObservationWrapper):
             rgb = agent_obs["rgb"]
             rgb = rgb.transpose(2, 0, 1)
 
+            ogm = agent_obs["ogm"]
+            ogm = ogm.transpose(2, 0, 1)
             # Distance between ego and goal.
             goal_distance = np.array(
                 [
@@ -126,13 +146,17 @@ class FilterObs(gym.ObservationWrapper):
             # test neighbers distance 
             neighbors_distances = []
             for neighbors_pos in agent_obs["neighbors"]["pos"]:
-                neighbors_distances.append(np.linalg.norm(neighbors_pos - agent_obs["ego"]["pos"]))
+                if neighbors_pos == np.array([0,0,0]):
+                    neighbors_distances.append(1e10)
+                else:
+                    neighbors_distances.append(np.linalg.norm(neighbors_pos - agent_obs["ego"]["pos"]))
             neighbors_distances = np.array(neighbors_distances, dtype=np.float64)
 
             wrapped_obs.update(
                 {
                     agent_id: {
                         "rgb": np.uint8(rgb),
+                        "ogm": np.uint8(ogm),
                         "goal_distance": goal_distance,
                         "goal_heading": goal_heading,
                         "neighbors_distances": neighbors_distances,

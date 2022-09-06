@@ -575,6 +575,7 @@ def _std_waypoints(
 ) -> Dict[str, np.ndarray]:
 
     # Truncate all paths to be of the same length
+    waypoint_paths = rcv_paths
     min_len = min(map(len, rcv_paths))
     trunc_paths = list(map(lambda x: x[:min_len], rcv_paths))
 

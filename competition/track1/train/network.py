@@ -24,6 +24,9 @@ class CombinedExtractor(BaseFeaturesExtractor):
             if key == "rgb":
                 extractors[key] = NatureCNN(subspace, features_dim=cnn_output_dim)
                 total_concat_size += cnn_output_dim
+            elif key == "ogm":
+                extractors[key] = NatureCNN(subspace, features_dim=cnn_output_dim)
+                total_concat_size += cnn_output_dim
             else:
                 # The observation key is a vector, flatten it if needed
                 extractors[key] = nn.Flatten()

@@ -58,6 +58,7 @@ class SingleAgent(gym.Wrapper):
             Tuple[Any, float, bool, Any]: Agent's observation, reward, done, and info
         """
         obs, reward, done, info = self.env.step({self._agent_id: action})
+        obs["Agent-0"]["neighbors_distances"] = obs["Agent-0"]["neighbors_distances"].reshape(30,1)
         return (
             obs[self._agent_id],
             reward[self._agent_id],
@@ -72,4 +73,5 @@ class SingleAgent(gym.Wrapper):
             Any: Agent's observation
         """
         obs = self.env.reset()
+        obs["Agent-0"]["neighbors_distances"] = obs["Agent-0"]["neighbors_distances"].reshape(30,1)
         return obs[self._agent_id]

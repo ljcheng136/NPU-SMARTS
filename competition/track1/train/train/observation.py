@@ -68,6 +68,13 @@ class FilterObs(gym.ObservationWrapper):
                             shape=(1, 1),
                             dtype=np.float32,
                         ),
+                        # test
+                        "neighbors_distances": gym.spaces.Box(
+                            low=-1e10,
+                            high=+1e10,
+                            shape=(10, 1),
+                            dtype=np.float64,
+                        ),
                     }
                 )
                 for agent_id, agent_obs_space in env.observation_space.spaces.items()
@@ -116,12 +123,19 @@ class FilterObs(gym.ObservationWrapper):
             goal_heading = (goal_heading + np.pi) % (2 * np.pi) - np.pi
             goal_heading = np.array([[goal_heading]], dtype=np.float32)
 
+            # test neighbers distance 
+            neighbors_distances = []
+            for neighbors_pos in agent_obs["neighbors"]["pos"]:
+                neighbors_distances.append(np.linalg.norm(neighbors_pos - agent_obs["ego"]["pos"]))
+            neighbors_distances = np.array(neighbors_distances, dtype=np.float64)
+
             wrapped_obs.update(
                 {
                     agent_id: {
                         "rgb": np.uint8(rgb),
                         "goal_distance": goal_distance,
                         "goal_heading": goal_heading,
+                        "neighbors_distances": neighbors_distances,
                     }
                 }
             )

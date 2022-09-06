@@ -45,43 +45,43 @@ Observations in numpy array format, suitable for vectorized processing.
 
 StdObs = dict({
     Total distance travelled in meters.
-    "dist": np.float32
+    "dist": np.float32 总行驶距离
     
-    Ego vehicle state, with the following attributes.
+    Ego vehicle state, with the following attributes. 自我车辆状态
     "ego": dict({
-        "angular_acceleration": 
+        "angular_acceleration":  角加速度
             Angular acceleration vector. Requires `accelerometer` attribute 
             enabled in AgentInterface, else absent. shape=(3,). dtype=np.float32.
         "angular_jerk":
             Angular jerk vector. Requires `accelerometer` attribute enabled in
             AgentInterface, else absent. shape=(3,). dtype=np.float32.
-        "angular_velocity":
+        "angular_velocity": 角速度
             Angular velocity vector. shape=(3,). dtype=np.float32).
-        "box":
+        "box": 车辆边界框的长宽高
             Length, width, and height of the vehicle bounding box. shape=(3,).
             dtype=np.float32.
-        "heading":
+        "heading": 航向
             Vehicle heading in radians [-pi, pi]. dtype=np.float32.
-        "lane_index":
+        "lane_index": 车道
             Vehicle's lane number. Rightmost lane has index 0 and increases 
             towards left. dtype=np.int8.
-        "linear_acceleration":
+        "linear_acceleration": 车辆在 x、y 和 z 轴上的加速度。
             Vehicle acceleration in x, y, and z axes. Requires `accelerometer`
             attribute enabled in AgentInterface, else absent. shape=(3,).
             dtype=np.float32.
-        "linear_jerk":
+        "linear_jerk": 线性混动向量。
             Linear jerk vector. Requires `accelerometer` attribute enabled in
             AgentInterface, else absent. shape=(3,). dtype=np.float32.
-        "linear_velocity":
+        "linear_velocity": x、y 和 z 轴上的车辆速度
             Vehicle velocity in x, y, and z axes. shape=(3,). dtype=np.float32.
-        "pos":
+        "pos": 车辆边界框底平面的中心坐标。
             Coordinate of the center of the vehicle bounding box's bottom plane.
             shape=(3,). dtype=np.float64.
-        "speed":
+        "speed": 速度
             Vehicle speed in m/s. dtype=np.float32.
-        "steering":
+        "steering": 前轮角度
             Angle of front wheels in radians [-pi, pi]. dtype=np.float32.
-        "yaw_rate":
+        "yaw_rate": 绕垂直轴的旋转速度
             Rotation speed around vertical axis in rad/s [0, 2pi].
             dtype=np.float32.
     )}
@@ -109,32 +109,34 @@ StdObs = dict({
     })
 
     Drivable area grid map. Map is binary, with 255 if a cell contains a road,
-    else 0. dtype=np.uint8.
+    else 0. dtype=np.uint8.可驾驶区域网格图。地图是二进制的，如果一个单元格包含一条道路，则为 255
+    否则 0
     "dagm": np.ndarray
 
-    Lidar point cloud, with the following attributes.
+    Lidar point cloud, with the following attributes.激光雷达点云
     "lidar": dict({
         "hit":
             Binary array. 1 if an object is hit, else 0. shape(300,).
-        "point_cloud":
+        "point_cloud": 激光雷达点云的坐标。
             Coordinates of lidar point cloud. shape=(300,3). dtype=np.float64.
-        "ray_origin":
+        "ray_origin": 射线原点坐标
             Ray origin coordinates. shape=(300,3). dtype=np.float64.
         "ray_vector":
             Ray vectors. shape=(300,3). dtype=np.float64.
     })
     
-    Mission details for the ego agent.
+    Mission details for the ego agent.自我代理的任务细节。
     "mission": dict({
-        "goal_pos":
+        "goal_pos": 通过到达终点位置来实现目标。
             Achieve goal by reaching the end position. Defaults to np.array([0,0,0])
             for no mission. shape=(3,). dtype=np.float64. 
     })
 
     Feature array of 10 nearest neighborhood vehicles. If nearest neighbor
     vehicles are insufficient, default feature values are padded.
+    10 个最近邻域车辆的特征数组。如果最近的邻近车辆不足，填充默认特征值。
     "neighbors": dict({
-        "box":
+        "box": 相邻车辆边界框
             Bounding box of neighbor vehicles. Defaults to np.array([0,0,0]) per
             vehicle. shape=(10,3). dtype=np.float32.
         "heading":
@@ -164,34 +166,34 @@ StdObs = dict({
     nearest 4 lanes. If lanes or waypoints ahead are insufficient, default 
     values are padded.
     "waypoints": dict({
-        "heading":
+        "heading": 航路点的航向角
             Lane heading angle at a waypoint in radians [-pi, pi]. Defaults to
             np.array([0]) per waypoint. shape=(4,20). dtype=np.float32.
-        "lane_index":
+        "lane_index":航路点的车道号
             Lane number at a waypoint. Defaults to np.array([0]) per waypoint.
             shape=(4,20). dtype=np.int8.
-        "lane_width":
+        "lane_width":航路点的车道宽度
             Lane width at a waypoint in meters. Defaults to np.array([0]) per
             waypoint. shape=(4,20). dtype=np.float32.
-        "pos":
+        "pos":航点坐标。
             Coordinate of a waypoint. Defaults to np.array([0,0,0]).
             shape=(4,20,3). dtype=np.float64.
-        "speed_limit":
+        "speed_limit":航路点的车道限速
             Lane speed limit at a waypoint in m/s. shape=(4,20). dtype=np.float32.
     }) 
 
     Feature array of 3 upcoming signals.  If there aren't this many signals ahead,
     default values are padded.
     "signals": dict({
-        "state":
+        "state":交通信号灯的状态
             The state of the traffic signal.
             See smarts.core.signal_provider.SignalLightState for interpretation.
             Defaults to np.array([0]) per signal.  shape=(3,), dtype=np.int8.
-        "stop_point":
+        "stop_point":由信号控制的交通停靠点
             The stopping point for traffic controlled by the signal, i.e., the
             point where actors should stop when the signal is in a stop state.
             Defaults to np.array([0, 0]) per signal.  shape=(3,2), dtype=np.float64.
-        "last_changed":
+        "last_changed":如果已知，则此信号上次更改其状态的仿真时间
             If known, the simulation time this signal last changed its state.
             Defaults to np.array([0]) per signal.  shape=(3,), dtype=np.float32.
     })

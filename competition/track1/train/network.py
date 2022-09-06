@@ -27,7 +27,25 @@ class CombinedExtractor(BaseFeaturesExtractor):
             else:
                 # The observation key is a vector, flatten it if needed
                 extractors[key] = nn.Flatten()
+                # hidden_dims = 3
+                # output_dims = 1
+                # input_dims = subspace.shape[1]
+                # print("--------------------------------------")
+                # print(input_dims)
+                # print(subspace.shape)
+                # print("--------------------------------------")
+                # extractors[key] = nn.Sequential(
+                #     nn.Linear(input_dims, hidden_dims),
+                #     nn.ReLU(),
+                #     nn.Linear(hidden_dims, output_dims),
+                #     nn.ReLU(),
+                #     nn.Flatten(),
+                # )
                 total_concat_size += get_flattened_obs_dim(subspace)
+                # total_concat_size += output_dims
+                # print("--------------------------------------")
+                # print(total_concat_size)
+                # print("--------------------------------------")
 
         self.extractors = nn.ModuleDict(extractors)
 
@@ -44,11 +62,14 @@ class CombinedExtractor(BaseFeaturesExtractor):
 
 def combined_extractor(config):
     kwargs = {}
-    kwargs["policy"] = "MultiInputPolicy"
+    kwargs["policy"] = "MultiInputLstmPolicy"
     kwargs["policy_kwargs"] = dict(
         features_extractor_class=CombinedExtractor,
         features_extractor_kwargs=dict(cnn_output_dim=256),
         net_arch=[],
-    )
+        n_lstm_layers = 1,
+        lstm_hidden_size = 256,
+        activation_fn = nn.ReLU,
+        )
     kwargs["target_kl"] = 0.1
     return kwargs

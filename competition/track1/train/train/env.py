@@ -59,13 +59,14 @@ def make(
         gym.Env: Environment corresponding to the `scenario`.
     """
 
-    # Create environment
+    # # Create environment
     env = gym.make(
         "smarts.env:multi-scenario-v0",
         scenario=scenario,
         img_meters=config["img_meters"],
         img_pixels=config["img_pixels"],
         sumo_headless=not config["sumo_gui"],  # If False, enables sumo-gui display.
+        visdom = True
     )
 
     # Wrap the environment

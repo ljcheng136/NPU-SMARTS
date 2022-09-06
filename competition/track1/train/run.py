@@ -5,6 +5,7 @@ from stable_baselines3.common.callbacks import CheckpointCallback, EvalCallback
 from ruamel.yaml import YAML
 import torch as th
 import stable_baselines3 as sb3lib
+import sb3_contrib
 import gym
 from typing import Any, Dict
 from pathlib import Path
@@ -89,11 +90,11 @@ def run(
         print("\nStart training.\n")
         scenarios_iter = cycle(config["scenarios"])
         if config["model"] is not None:
-            model = getattr(sb3lib, config["alg"]).load(
+            model = getattr(sb3_contrib, config["alg"]).load(
                 config["model"], print_system_info=True
             )
         else:
-            model = getattr(sb3lib, config["alg"])(
+            model = getattr(sb3_contrib, config["alg"])(
                 env=envs_train[next(scenarios_iter)],
                 verbose=1,
                 tensorboard_log=config["logdir"] / "tensorboard",
@@ -124,7 +125,7 @@ def run(
 
     if config["mode"] == "evaluate":
         print("\nEvaluate policy.\n")
-        model = getattr(sb3lib, config["alg"]).load(
+        model = getattr(sb3_contrib, config["alg"]).load(
             config["model"], print_system_info=True
         )
         for env_name, env_eval in envs_eval.items():

@@ -146,7 +146,7 @@ class FilterObs(gym.ObservationWrapper):
             # test neighbers distance 
             neighbors_distances = []
             for neighbors_pos in agent_obs["neighbors"]["pos"]:
-                if neighbors_pos == np.array([0,0,0]):
+                if (neighbors_pos == np.array([0,0,0])).all():
                     neighbors_distances.append(1e10)
                 else:
                     neighbors_distances.append(np.linalg.norm(neighbors_pos - agent_obs["ego"]["pos"]))

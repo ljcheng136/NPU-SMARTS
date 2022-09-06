@@ -47,7 +47,7 @@ class CombinedExtractor(BaseFeaturesExtractor):
 
 def combined_extractor(config):
     kwargs = {}
-    kwargs["policy"] = "MultiInputPolicy"
+    kwargs["policy"] = "MultiInputLstmPolicy"
     kwargs["policy_kwargs"] = dict(
         features_extractor_class=CombinedExtractor,
         features_extractor_kwargs=dict(cnn_output_dim=256),

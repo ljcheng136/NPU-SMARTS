@@ -22,4 +22,4 @@ smarts:
   eval_freq: 50_000 # Evaluate the trained model every eval_freq steps and save the best model.
 
   # Policy
-  alg: PPO  # Stable Baselines3 algorithm.
+  alg: RecurrentPPO  # Stable Baselines3 algorithm.

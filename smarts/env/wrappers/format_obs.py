@@ -467,7 +467,8 @@ def _std_events(val: Events) -> Dict[str, int]:
 
 
 def _std_lidar(
-    val: Tuple[List[np.ndarray], List[np.ndarray], List[Tuple[np.ndarray, np.ndarray]]]
+    val: Tuple[List[np.ndarray], List[np.ndarray],
+               List[Tuple[np.ndarray, np.ndarray]]]
 ) -> Dict[str, np.ndarray]:
 
     des_shp = _LIDAR_SHP
@@ -581,7 +582,8 @@ def _std_waypoints(
 
     des_shp = _WAYPOINT_SHP
     rcv_shp = (len(trunc_paths), len(trunc_paths[0]))
-    pad_shp = [0 if des - rcv < 0 else des - rcv for des, rcv in zip(des_shp, rcv_shp)]
+    pad_shp = [0 if des - rcv < 0 else des -
+               rcv for des, rcv in zip(des_shp, rcv_shp)]
 
     def extract_elem(waypoint):
         return (

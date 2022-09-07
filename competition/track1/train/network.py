@@ -14,7 +14,8 @@ class CombinedExtractor(BaseFeaturesExtractor):
     """
 
     def __init__(self, observation_space: gym.spaces.Dict, cnn_output_dim: int = 256):
-        super(CombinedExtractor, self).__init__(observation_space, features_dim=1)
+        super(CombinedExtractor, self).__init__(
+            observation_space, features_dim=1)
         # We assume CxHxW images (channels first)
 
         extractors = {}
@@ -22,10 +23,16 @@ class CombinedExtractor(BaseFeaturesExtractor):
         total_concat_size = 0
         for key, subspace in observation_space.spaces.items():
             if key == "rgb":
-                extractors[key] = NatureCNN(subspace, features_dim=cnn_output_dim)
+                extractors[key] = NatureCNN(
+                    subspace, features_dim=cnn_output_dim)
                 total_concat_size += cnn_output_dim
             elif key == "ogm":
-                extractors[key] = NatureCNN(subspace, features_dim=cnn_output_dim)
+                extractors[key] = NatureCNN(
+                    subspace, features_dim=cnn_output_dim)
+                total_concat_size += cnn_output_dim
+            elif key == "dagm":
+                extractors[key] = NatureCNN(
+                    subspace, features_dim=cnn_output_dim)
                 total_concat_size += cnn_output_dim
             else:
                 # The observation key is a vector, flatten it if needed

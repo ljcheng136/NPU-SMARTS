@@ -62,7 +62,14 @@ class FilterObs(gym.ObservationWrapper):
                             shape=(agent_obs_space["ogm"].shape[-1],)
                             + agent_obs_space["ogm"].shape[:-1],
                             dtype=np.uint8
-                            ),
+                        ),
+                        "dagm": gym.spaces.Box(
+                            low=0,
+                            high=255,
+                            shape=(agent_obs_space["dagm"].shape[-1],)
+                            + agent_obs_space["dagm"].shape[:-1],
+                            dtype=np.uint8
+                        ),
                         "goal_distance": gym.spaces.Box(
                             low=-1e10,
                             high=+1e10,
@@ -85,7 +92,7 @@ class FilterObs(gym.ObservationWrapper):
                         # ttr
                         # "ego_lane_dist": gym.spaces.Box(
                         #     low=-1e10,
-                        #     high=1e10, 
+                        #     high=1e10,
                         #     shape=(3,),
                         #     ),
                         # "ego_ttc": gym.spaces.Box(
@@ -112,12 +119,16 @@ class FilterObs(gym.ObservationWrapper):
 
             ogm = agent_obs["ogm"]
             ogm = ogm.transpose(2, 0, 1)
+
+            dagm = agent_obs["ogm"]
+            dagm = dagm.transpose(2, 0, 1)
             # Distance between ego and goal.
             goal_distance = np.array(
                 [
                     [
                         np.linalg.norm(
-                            agent_obs["mission"]["goal_pos"] - agent_obs["ego"]["pos"]
+                            agent_obs["mission"]["goal_pos"] -
+                            agent_obs["ego"]["pos"]
                         )
                     ]
                 ],
@@ -127,7 +138,8 @@ class FilterObs(gym.ObservationWrapper):
             # Ego's heading with respect to the map's coordinate system.
             # Note: All angles returned by smarts is with respect to the map's coordinate system.
             #       On the map, angle is zero at positive y axis, and increases anti-clockwise.
-            ego_heading = (agent_obs["ego"]["heading"] + np.pi) % (2 * np.pi) - np.pi
+            ego_heading = (agent_obs["ego"]["heading"] +
+                           np.pi) % (2 * np.pi) - np.pi
             ego_pos = agent_obs["ego"]["pos"]
 
             # Goal's angle with respect to the ego's position.
@@ -143,20 +155,23 @@ class FilterObs(gym.ObservationWrapper):
             goal_heading = (goal_heading + np.pi) % (2 * np.pi) - np.pi
             goal_heading = np.array([[goal_heading]], dtype=np.float32)
 
-            # test neighbers distance 
+            # test neighbers distance
             neighbors_distances = []
             for neighbors_pos in agent_obs["neighbors"]["pos"]:
-                if (neighbors_pos == np.array([0,0,0])).all():
+                if (neighbors_pos == np.array([0, 0, 0])).all():
                     neighbors_distances.append(1e10)
                 else:
-                    neighbors_distances.append(np.linalg.norm(neighbors_pos - agent_obs["ego"]["pos"]))
-            neighbors_distances = np.array(neighbors_distances, dtype=np.float64)
+                    neighbors_distances.append(np.linalg.norm(
+                        neighbors_pos - agent_obs["ego"]["pos"]))
+            neighbors_distances = np.array(
+                neighbors_distances, dtype=np.float64)
 
             wrapped_obs.update(
                 {
                     agent_id: {
                         "rgb": np.uint8(rgb),
                         "ogm": np.uint8(ogm),
+                        "dagm": np.uint8(dagm),
                         "goal_distance": goal_distance,
                         "goal_heading": goal_heading,
                         "neighbors_distances": neighbors_distances,
@@ -202,9 +217,12 @@ class Concatenate(gym.ObservationWrapper):
         for agent_name, agent_space in env.observation_space.spaces.items():
             subspaces = {}
             for key, space in agent_space[0].spaces.items():
-                low = np.repeat(space.low, self._num_stack, axis=self._repeat_axis)
-                high = np.repeat(space.high, self._num_stack, axis=self._repeat_axis)
-                subspaces[key] = gym.spaces.Box(low=low, high=high, dtype=space.dtype)
+                low = np.repeat(space.low, self._num_stack,
+                                axis=self._repeat_axis)
+                high = np.repeat(space.high, self._num_stack,
+                                 axis=self._repeat_axis)
+                subspaces[key] = gym.spaces.Box(
+                    low=low, high=high, dtype=space.dtype)
             obs_space.update({agent_name: gym.spaces.Dict(subspaces)})
         self.observation_space = gym.spaces.Dict(obs_space)
 

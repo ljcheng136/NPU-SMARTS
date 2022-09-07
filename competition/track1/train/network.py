@@ -36,8 +36,33 @@ class CombinedExtractor(BaseFeaturesExtractor):
                 total_concat_size += cnn_output_dim
             else:
                 # The observation key is a vector, flatten it if needed
-                extractors[key] = nn.Flatten()
-                total_concat_size += get_flattened_obs_dim(subspace)
+                # The observation key is a vector, flatten it if needed
+                # extractors[key] = nn.Flatten()
+                input_dims = get_flattened_obs_dim(subspace)
+                hidden_dims = 256
+                output_dims = 128
+                dropout_p = 0.1
+                extractors[key] = nn.Sequential(
+                    nn.Flatten(),
+                    nn.Linear(input_dims, hidden_dims),
+                    nn.Dropout(dropout_p),
+                    nn.Tanh(),
+                    nn.Linear(hidden_dims,output_dims),
+                    nn.BatchNorm1d(output_dims),
+                    nn.Tanh(),
+                )
+                # test_sum = get_flattened_obs_dim(subspace)
+                # test = nn.Sequential(
+                #     nn.Flatten(),
+                #     nn.Linear(test_sum, 128),
+                #     nn.ReLU(),
+                # )
+                # total_concat_size += get_flattened_obs_dim(subspace)
+                total_concat_size += output_dims
+                # print("*****************************")
+                # print(get_flattened_obs_dim(subspace))
+                # print(total_concat_size)
+                # print("*****************************")
 
         self.extractors = nn.ModuleDict(extractors)
 
